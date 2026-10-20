@@ -1,0 +1,3 @@
+import './globals.css';import { Nav } from '@/components/nav';import { ThemeToggle } from '@/components/theme-toggle';
+export const metadata={title:'JobHunt — Discover your next role',description:'Personal software engineering job discovery dashboard'};
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body><div className="shell"><Nav/><main className="main"><header className="topbar"><span className="subtle" style={{fontSize:13,fontWeight:700}}>Your job search workspace</span><div style={{display:'flex',alignItems:'center',gap:10}}><span className="pill">● Live discovery</span><ThemeToggle/></div></header>{children}</main></div></body></html>}

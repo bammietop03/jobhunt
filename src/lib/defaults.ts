@@ -1,0 +1,4 @@
+export const defaultTitles = ['Backend Developer','Backend Engineer','Node.js Developer','NestJS Developer','Full Stack Developer','Full Stack Engineer','Software Engineer','Python Backend Developer','TypeScript Developer'];
+export const defaultSkills = ['TypeScript','JavaScript','Node.js','Next.js','NestJS','Express.js','Python','Django','Flask','PostgreSQL','MySQL','Redis','Docker','REST APIs','WebSockets','AWS','Git'];
+export const defaultWeights = {title:25,skills:25,experience:8,eligibility:18,location:5,recency:12,employment:4,salary:3};
+export const defaultPreferences = {titles:defaultTitles,skills:defaultSkills,countries:['Nigeria','Worldwide','Africa','EMEA'],remoteOnly:true,experienceLevel:null,minimumSalary:null,excludedKeywords:[],excludedCompanies:[],maxAgeDays:7,matchThreshold:55,syncEnabled:true,weights:defaultWeights};

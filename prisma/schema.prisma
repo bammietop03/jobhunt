@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum RemoteType {
+  REMOTE
+  HYBRID
+  ONSITE
+  UNKNOWN
+}
+enum Eligibility {
+  NIGERIA
+  AFRICA
+  EMEA
+  WORLDWIDE
+  EXPLICIT_NIGERIA
+  RESTRICTED
+  UNKNOWN
+}
+enum JobStatus {
+  ACTIVE
+  STALE
+  DISMISSED
+}
+enum ApplicationStatus {
+  NOT_APPLIED
+  APPLIED
+  SCREENING
+  INTERVIEW
+  ASSESSMENT
+  OFFER
+  REJECTED
+  WITHDRAWN
+}
+enum SyncStatus {
+  RUNNING
+  SUCCESS
+  PARTIAL
+  FAILED
+}
+
+model Company {
+  id String @id @default(cuid())
+  name String @unique
+  website String?
+  logo String?
+  careerPageUrl String?
+  atsProvider String?
+  atsBoardIdentifier String?
+  active Boolean @default(true)
+  jobs Job[]
+  @@index([atsProvider, atsBoardIdentifier])
+}
+
+model Job {
+  id String @id @default(cuid())
+  externalId String
+  provider String
+  companyId String?
+  company Company? @relation(fields:[companyId], references:[id], onDelete:SetNull)
+  companyName String
+  title String
+  slug String
+  description String @db.Text
+  descriptionText String @db.Text
+  responsibilities String[] @default([])
+  qualifications String[] @default([])
+  benefits String[] @default([])
+  location String?
+  remoteType RemoteType @default(UNKNOWN)
+  eligibleRegions String[] @default([])
+  nigeriaEligibility Eligibility @default(UNKNOWN)
+  eligibilityReason String?
+  salaryMin Int?
+  salaryMax Int?
+  currency String?
+  salaryPeriod String?
+  experienceLevel String?
+  employmentType String?
+  requiredSkills String[] @default([])
+  preferredSkills String[] @default([])
+  applyUrl String
+  originalUrl String
+  canonicalKey String @unique
+  sourcePublishedAt DateTime?
+  firstDiscoveredAt DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  lastVerifiedAt DateTime @default(now())
+  status JobStatus @default(ACTIVE)
+  matchScore Int @default(0)
+  matchReasons String[] @default([])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  saved SavedJob?
+  application Application?
+  @@unique([provider, externalId])
+  @@index([status, sourcePublishedAt(sort: Desc)])
+  @@index([matchScore(sort: Desc)])
+  @@index([nigeriaEligibility, remoteType])
+  @@index([companyName, title])
+}
+
+model SavedJob {
+  id String @id @default(cuid())
+  jobId String @unique
+  job Job @relation(fields:[jobId], references:[id], onDelete:Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Application {
+  id String @id @default(cuid())
+  jobId String @unique
+  job Job @relation(fields:[jobId], references:[id], onDelete:Cascade)
+  status ApplicationStatus @default(NOT_APPLIED)
+  appliedAt DateTime?
+  notes String? @db.Text
+  followUpAt DateTime?
+  link String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status, followUpAt])
+}
+
+model JobSource {
+  id String @id @default(cuid())
+  provider String @unique
+  configuration Json @default("{}")
+  enabled Boolean @default(true)
+  lastSuccessfulSync DateTime?
+}
+
+model SyncRun {
+  id String @id @default(cuid())
+  source String
+  startedAt DateTime @default(now())
+  endedAt DateTime?
+  status SyncStatus @default(RUNNING)
+  fetched Int @default(0)
+  inserted Int @default(0)
+  updated Int @default(0)
+  skipped Int @default(0)
+  error String? @db.Text
+  @@index([startedAt(sort: Desc)])
+}
+
+model UserPreference {
+  id String @id @default("single-user")
+  titles String[] @default([])
+  skills String[] @default([])
+  countries String[] @default([])
+  remoteOnly Boolean @default(false)
+  experienceLevel String?
+  minimumSalary Int?
+  excludedKeywords String[] @default([])
+  excludedCompanies String[] @default([])
+  maxAgeDays Int @default(30)
+  matchThreshold Int @default(55)
+  syncEnabled Boolean @default(true)
+  weights Json @default("{}")
+  updatedAt DateTime @updatedAt
+}

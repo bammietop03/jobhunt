@@ -1,0 +1,2 @@
+import { JobCard } from './job-card';import { SearchX } from 'lucide-react';import { listJobs } from '@/lib/queries';
+export function JobList({jobs}:{jobs:Awaited<ReturnType<typeof listJobs>>['jobs']}){return jobs.length?<div className="jobs-grid">{jobs.map(job=><JobCard key={job.id} job={job}/>)}</div>:<div className="card empty"><div className="empty-icon"><SearchX/></div><h3 style={{fontWeight:800,fontSize:18}}>No jobs match these filters</h3><p className="subtle" style={{marginTop:7,fontSize:13}}>Try broadening your filters or run a fresh sync.</p></div>}

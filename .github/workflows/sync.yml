@@ -1,0 +1,16 @@
+name: Sync jobs
+on:
+  schedule:
+    - cron: '15 */6 * * *'
+  workflow_dispatch:
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call protected sync endpoint
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          test -n "$APP_URL" && test -n "$CRON_SECRET"
+          curl --fail-with-body --retry 2 --max-time 300 -X POST "${APP_URL%/}/api/sync" -H "Authorization: Bearer $CRON_SECRET"

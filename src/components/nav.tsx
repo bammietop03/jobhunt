@@ -1,0 +1,4 @@
+'use client';
+import Link from 'next/link';import { usePathname } from 'next/navigation';import { LayoutDashboard,Bookmark,BriefcaseBusiness,Settings,Compass } from 'lucide-react';
+const links=[{href:'/',label:'Discover',icon:LayoutDashboard},{href:'/saved',label:'Saved jobs',icon:Bookmark},{href:'/applications',label:'Applications',icon:BriefcaseBusiness},{href:'/settings',label:'Settings',icon:Settings}];
+export function Nav(){const path=usePathname();return <aside className="sidebar"><Link href="/" className="brand"><span className="brand-mark"><Compass size={21}/></span> JobHunt</Link><nav>{links.map(({href,label,icon:Icon})=><Link key={href} href={href} className={`nav-link ${path===href?'active':''}`}><Icon size={18}/>{label}</Link>)}</nav><div className="sidebar-bottom"><strong>Made for your next move</strong><br/>Fresh software engineering openings, ranked for your preferences.</div></aside>}

@@ -1,0 +1,1 @@
+export default function Loading(){return <div className="content"><div className="skeleton" style={{height:90,marginBottom:25}}/><div className="stat-grid">{Array.from({length:6},(_,i)=><div className="skeleton" key={i} style={{height:120}}/>)}</div><div className="jobs-grid">{Array.from({length:4},(_,i)=><div className="skeleton" key={i}/>)}</div></div>}
