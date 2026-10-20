@@ -5,11 +5,11 @@ Personal job discovery dashboard built with Next.js App Router, Prisma, Supabase
 ## Setup
 
 1. Install Node.js 20.9+ and enable Corepack. Run `corepack yarn install` (or `yarn install` when Corepack provides Yarn on your PATH).
-2. Create a Supabase PostgreSQL database. Copy `.env.example` to `.env.local` and set `DATABASE_URL`, `DIRECT_URL`, and a random `CRON_SECRET`. Use the Supabase transaction pooler for `DATABASE_URL` and direct connection for `DIRECT_URL`.
+2. Create a Supabase PostgreSQL database. Copy `.env.example` to `.env.local` and set `DATABASE_URL`, `DIRECT_URL`, a random `CRON_SECRET`, and your chosen `APP_PASSWORD`. Use the Supabase transaction pooler for `DATABASE_URL` and direct connection for `DIRECT_URL`.
 3. Also make these variables available to Prisma CLI in `.env` or your shell. Run `corepack yarn db:migrate` and `corepack yarn db:seed`.
 4. Run `corepack yarn dev`, open `http://localhost:3000`, and select **Refresh jobs**.
 
-For Vercel, set the same three environment variables and deploy. In GitHub Actions, set `APP_URL` to the deployed site and `CRON_SECRET` to the matching secret. The included workflow calls `/api/sync` every six hours. Vercel function duration must allow enough time for configured boards; the route sets `maxDuration = 300`.
+For Vercel, set the same four environment variables and deploy. In GitHub Actions, set `APP_URL` to the deployed site and `CRON_SECRET` to the matching secret. The included workflow calls `/api/sync` every six hours. Vercel function duration must allow enough time for configured boards; the route sets `maxDuration = 300`.
 
 ## Data behavior
 
@@ -19,7 +19,7 @@ For Vercel, set the same three environment variables and deploy. In GitHub Actio
 - Greenhouse list responses often omit a publication timestamp, so those jobs show when first discovered. Lever also does not consistently supply publication dates. Remotive and Arbeitnow dates come from their public responses.
 - A sync failure leaves existing jobs intact and is recorded under Settings. There are no placeholder jobs.
 - Discovery imports and displays remote roles only. Jobs first discovered more than seven days ago are removed during each scheduled sync unless saved or marked as applied. Saved jobs and application history remain available even when older or no longer listed by a provider.
-- The application is designed for one person and intentionally has no login. Deploy it privately or behind deployment-level access control if the database contains private application notes.
+- The application uses one password from `APP_PASSWORD`. It stays locked when that variable is missing. A successful login sets a seven-day HTTP-only session cookie; changing the password invalidates existing sessions. Use HTTPS and a password that is hard to guess.
 
 ## Provider references
 
