@@ -40,19 +40,24 @@ export default async function JobDetail({
           gap: 7,
           alignItems: "center",
           fontSize: 13,
-          marginBottom: 25,
+          marginBottom: 18,
         }}
       >
         <ArrowLeft size={15} /> All jobs
       </Link>
-      <div className="card" style={{ padding: 28, marginBottom: 18 }}>
-        <div className="eyebrow">
-          {job.companyName} · {job.provider}
+      <div className="card job-detail-header">
+        <div className="job-header-top">
+          <div className="eyebrow">
+            {job.companyName} · {job.provider}
+          </div>
+          <span className={`score ${job.matchScore < 50 ? "low" : ""}`}>
+            {job.matchScore}% match
+          </span>
         </div>
-        <h1 className="heading" style={{ marginTop: 9 }}>
+        <h1 className="heading job-title-main">
           {job.title}
         </h1>
-        <div className="meta" style={{ marginTop: 15, fontSize: 13 }}>
+        <div className="meta" style={{ marginTop: 14, fontSize: 13 }}>
           <span>
             <MapPin size={15} />
             {job.location ?? "Location not listed"}
@@ -66,18 +71,14 @@ export default async function JobDetail({
             {job.nigeriaEligibility.replace("_", " ").toLowerCase()}
           </span>
         </div>
-        <div
-          style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 20 }}
-        >
+        <div className="tag-row" style={{ marginTop: 18 }}>
           {job.requiredSkills.map((skill) => (
             <span className="tag" key={skill}>
               {skill}
             </span>
           ))}
         </div>
-        <div
-          style={{ display: "flex", gap: 9, marginTop: 22, flexWrap: "wrap" }}
-        >
+        <div className="job-actions">
           <a
             href={job.applyUrl}
             target="_blank"
@@ -110,14 +111,8 @@ export default async function JobDetail({
           </form>
         </div>
       </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0,1fr) 290px",
-          gap: 18,
-        }}
-      >
-        <section className="card" style={{ padding: 28 }}>
+      <div className="job-detail-grid">
+        <section className="card job-detail-main">
           <h2 style={{ fontSize: 19, fontWeight: 800, marginBottom: 16 }}>
             Full job description
           </h2>
@@ -135,14 +130,7 @@ export default async function JobDetail({
             .map(([title, items]) => (
               <section key={title} style={{ marginTop: 25 }}>
                 <h3 style={{ fontWeight: 800, marginBottom: 8 }}>{title}</h3>
-                <ul
-                  style={{
-                    listStyle: "disc",
-                    paddingLeft: 20,
-                    fontSize: 13,
-                    lineHeight: 1.7,
-                  }}
-                >
+                <ul className="job-list">
                   {items.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
@@ -150,8 +138,8 @@ export default async function JobDetail({
               </section>
             ))}
         </section>
-        <aside style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-          <div className="card" style={{ padding: 22 }}>
+        <aside className="job-detail-sidebar">
+          <div className="card job-aside-card">
             <div className="eyebrow">MATCH ANALYSIS</div>
             <div style={{ fontSize: 35, fontWeight: 800, margin: "8px 0" }}>
               {job.matchScore}
@@ -163,41 +151,41 @@ export default async function JobDetail({
               </div>
             ))}
           </div>
-          <div className="card" style={{ padding: 22 }}>
+          <div className="card job-aside-card">
             <h3 style={{ fontWeight: 800 }}>At a glance</h3>
-            <dl style={{ fontSize: 12, lineHeight: 2.1, marginTop: 12 }}>
-              <div>
-                <dt className="subtle">Workplace</dt>
+            <dl className="glance-dl">
+              <div className="glance-item">
+                <dt>Workplace</dt>
                 <dd>{job.remoteType.toLowerCase()}</dd>
               </div>
-              <div>
-                <dt className="subtle">Eligibility from Nigeria</dt>
+              <div className="glance-item">
+                <dt>Eligibility from Nigeria</dt>
                 <dd>{job.eligibilityReason ?? "Unknown"}</dd>
               </div>
-              <div>
-                <dt className="subtle">Salary</dt>
+              <div className="glance-item">
+                <dt>Salary</dt>
                 <dd>
                   {job.salaryMin
                     ? `${job.currency ?? ""} ${job.salaryMin.toLocaleString()}${job.salaryMax ? `–${job.salaryMax.toLocaleString()}` : ""} ${job.salaryPeriod ?? ""}`
                     : "Not advertised"}
                 </dd>
               </div>
-              <div>
-                <dt className="subtle">Employment</dt>
+              <div className="glance-item">
+                <dt>Employment</dt>
                 <dd>{job.employmentType ?? "Not specified"}</dd>
               </div>
-              <div>
-                <dt className="subtle">Experience</dt>
+              <div className="glance-item">
+                <dt>Experience</dt>
                 <dd>{job.experienceLevel ?? "Not specified"}</dd>
               </div>
-              <div>
-                <dt className="subtle">Last verified</dt>
+              <div className="glance-item">
+                <dt>Last verified</dt>
                 <dd>{date(job.lastVerifiedAt)}</dd>
               </div>
             </dl>
           </div>
           <a
-            className="btn"
+            className="btn btn-block"
             href={job.originalUrl}
             target="_blank"
             rel="noopener noreferrer"
